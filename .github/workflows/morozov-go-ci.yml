@@ -1,5 +1,8 @@
 name: Morozov Go CI
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   push:
     branches:
@@ -30,6 +33,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "1.23.x"
+          cache: false
 
       - name: Run go vet
         run: go vet ./...
@@ -45,6 +49,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "1.23.x"
+          cache: false
 
       - name: Run tests with coverage
         run: go test ./... -cover
@@ -63,6 +68,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "1.23.x"
+          cache: false
 
       - name: Build binary
         run: mkdir -p ../bin && go build -o ../bin/morozov-variant-13 .
