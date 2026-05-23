@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Лаба 4 - Ермаков Е.М. вариант 7</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1100px; margin: 32px auto; padding: 0 20px; line-height: 1.55; color: #20242a; }
+    h1, h2 { color: #15324a; }
+    section { border-top: 1px solid #d8dee8; margin-top: 26px; padding-top: 18px; }
+    code, pre { background: #f4f6f8; border: 1px solid #e0e5eb; border-radius: 5px; }
+    code { padding: 2px 5px; }
+    pre { padding: 14px; overflow: auto; }
+    img { max-width: 100%; border: 1px solid #cfd6df; border-radius: 6px; margin: 10px 0 22px; }
+  </style>
+</head>
+<body>
+  <h1>Лабораторная работа 4: GitHub Actions CI</h1>
+  <p><b>Студент:</b> Ермаков Е.М.</p>
+  <p><b>Вариант:</b> 7</p>
+  <p><b>Стек:</b> Node.js, ESLint, Mocha, npm pack.</p>
+  <p><b>Репозиторий:</b> <a href="https://github.com/morg00/lab-4-ci">https://github.com/morg00/lab-4-ci</a></p>
+
+  <section>
+    <h2>1. Структура проекта</h2>
+    <pre>ermakov-variant-7/
+├── package.json
+├── package-lock.json
+├── eslint.config.js
+├── src/
+│   └── utils.js
+└── test/
+    └── utils.test.js</pre>
+    <p>Проект не имел готовой CI-конфигурации до добавления workflow. В корне репозитория создан файл <code>.github/workflows/ermakov-node-ci.yml</code>.</p>
+  </section>
+
+  <section>
+    <h2>2. Реализованные функции</h2>
+    <p>В файле <code>src/utils.js</code> реализованы функции:</p>
+    <pre>add(a, b)
+isPalindrome(value)
+countWords(text)
+titleCase(text)</pre>
+    <p>Тестами Mocha покрыты минимум три функции, фактически проверены все четыре.</p>
+  </section>
+
+  <section>
+    <h2>3. Локальная проверка</h2>
+    <p>Перед отправкой на GitHub выполнены команды:</p>
+    <pre>npm install
+npm run lint
+npm test
+npm run build</pre>
+    <p>Результат: ESLint прошел, 4 теста Mocha прошли, coverage 100%, команда <code>npm pack</code> создала пакет.</p>
+  </section>
+
+  <section>
+    <h2>4. Workflow</h2>
+    <p>Workflow запускается при push и pull request в ветку <code>main</code>, если изменился Node.js-проект или сам workflow.</p>
+    <pre>on:
+  push:
+    branches:
+      - main
+    paths:
+      - "ermakov-variant-7/**"
+      - ".github/workflows/ermakov-node-ci.yml"</pre>
+    <p>Pipeline содержит три обязательных этапа:</p>
+    <pre>Lint  -> npm run lint
+Test  -> npm test
+Build -> npm pack</pre>
+  </section>
+
+  <section>
+    <h2>5. GitHub Actions</h2>
+    <p>Репозиторий успешно создан на GitHub.</p>
+    <img src="screenshots/01_github_repo.png" alt="Репозиторий lab-4-ci на GitHub">
+    <p>Во вкладке Actions видны запуски двух workflow.</p>
+    <img src="screenshots/02_github_actions_list.png" alt="Список GitHub Actions workflow">
+    <p>Workflow Ермакова завершился успешно: этапы <code>Lint</code>, <code>Test</code> и <code>Build</code> имеют статус Success.</p>
+    <img src="screenshots/03_ermakov_node_actions.png" alt="Успешный запуск Ermakov Node.js CI">
+  </section>
+
+  <section>
+    <h2>6. Команды для повторения</h2>
+    <pre>git clone https://github.com/morg00/lab-4-ci.git
+cd lab-4-ci/ermakov-variant-7
+npm ci
+npm run lint
+npm test
+npm run build</pre>
+  </section>
+</body>
+</html>

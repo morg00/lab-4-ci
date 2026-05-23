@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Лаба 4 - Морозов А.Д. вариант 13</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1100px; margin: 32px auto; padding: 0 20px; line-height: 1.55; color: #20242a; }
+    h1, h2 { color: #17321f; }
+    section { border-top: 1px solid #d8e3d8; margin-top: 26px; padding-top: 18px; }
+    code, pre { background: #f3f7f3; border: 1px solid #dce8dc; border-radius: 5px; }
+    code { padding: 2px 5px; }
+    pre { padding: 14px; overflow: auto; }
+    img { max-width: 100%; border: 1px solid #cfd8cf; border-radius: 6px; margin: 10px 0 22px; }
+  </style>
+</head>
+<body>
+  <h1>Лабораторная работа 4: GitHub Actions CI</h1>
+  <p><b>Студент:</b> Морозов А.Д.</p>
+  <p><b>Вариант:</b> 13</p>
+  <p><b>Стек:</b> Go, go vet, go test, go build.</p>
+  <p><b>Репозиторий:</b> <a href="https://github.com/morg00/lab-4-ci">https://github.com/morg00/lab-4-ci</a></p>
+
+  <section>
+    <h2>1. Структура проекта</h2>
+    <pre>morozov-variant-13/
+├── go.mod
+├── main.go
+├── mathutils.go
+└── mathutils_test.go</pre>
+    <p>Проект не имел готовой CI-конфигурации до добавления workflow. В корне репозитория создан файл <code>.github/workflows/morozov-go-ci.yml</code>.</p>
+  </section>
+
+  <section>
+    <h2>2. Реализованные функции</h2>
+    <p>В файле <code>mathutils.go</code> реализованы функции:</p>
+    <pre>Add(a, b int)
+Max(values []int)
+Reverse(text string)
+IsEven(value int)
+RuneCount(text string)</pre>
+    <p>Тестами <code>go test</code> покрыты минимум три функции, фактически проверены все пять.</p>
+  </section>
+
+  <section>
+    <h2>3. Локальная проверка</h2>
+    <p>Так как Go локально на компьютере не установлен, проверка выполнена через Docker-образ <code>golang:1.23-alpine</code>:</p>
+    <pre>docker run --rm \
+  -v "/Users/alex/Лаба 4/lab-4-ci/morozov-variant-13:/src" \
+  -w /src \
+  golang:1.23-alpine \
+  sh -c 'go vet ./... && go test ./... -cover && go build -o /tmp/morozov-variant-13 .'</pre>
+    <p>Результат: <code>go vet</code> прошел, тесты прошли, coverage 86.7%, сборка бинарника прошла.</p>
+  </section>
+
+  <section>
+    <h2>4. Workflow</h2>
+    <p>Workflow запускается при push и pull request в ветку <code>main</code>, если изменился Go-проект или сам workflow.</p>
+    <pre>on:
+  push:
+    branches:
+      - main
+    paths:
+      - "morozov-variant-13/**"
+      - ".github/workflows/morozov-go-ci.yml"</pre>
+    <p>Pipeline содержит три обязательных этапа:</p>
+    <pre>Lint  -> go vet ./...
+Test  -> go test ./... -cover
+Build -> go build</pre>
+  </section>
+
+  <section>
+    <h2>5. GitHub Actions</h2>
+    <p>Репозиторий успешно создан на GitHub.</p>
+    <img src="screenshots/01_github_repo.png" alt="Репозиторий lab-4-ci на GitHub">
+    <p>Во вкладке Actions видны запуски двух workflow.</p>
+    <img src="screenshots/02_github_actions_list.png" alt="Список GitHub Actions workflow">
+    <p>Workflow Морозова завершился успешно: этапы <code>Lint</code>, <code>Test</code> и <code>Build</code> имеют статус Success.</p>
+    <img src="screenshots/04_morozov_go_actions.png" alt="Успешный запуск Morozov Go CI">
+  </section>
+
+  <section>
+    <h2>6. Команды для повторения</h2>
+    <pre>git clone https://github.com/morg00/lab-4-ci.git
+cd lab-4-ci/morozov-variant-13
+go vet ./...
+go test ./... -cover
+go build .</pre>
+  </section>
+</body>
+</html>
